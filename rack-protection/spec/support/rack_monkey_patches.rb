@@ -1,8 +1,8 @@
-if defined? Gem.loaded_specs and Gem.loaded_specs.include? 'rack'
-  version = Gem.loaded_specs['rack'].version.to_s
+version = if defined? Gem.loaded_specs and Gem.loaded_specs.include? 'rack'
+  Gem.loaded_specs['rack'].version.to_s
 else
-  version = Rack.release + '.0'
-end
+  Rack.release + '.0'
+          end
 
 if version == "1.3"
   Rack::Session::Abstract::ID.class_eval do
