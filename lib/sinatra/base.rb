@@ -310,11 +310,11 @@ module Sinatra
       uri = [host = String.new]
       if absolute
         host << "http#{'s' if request.secure?}://"
-        if request.forwarded? or request.port != (request.secure? ? 443 : 80)
-          host << request.host_with_port
+        host << if request.forwarded? or request.port != (request.secure? ? 443 : 80)
+          request.host_with_port
         else
-          host << request.host
-        end
+          request.host
+                end
       end
       uri << request.script_name.to_s if add_script_name
       uri << (addr ? addr : request.path_info).to_s
@@ -1232,11 +1232,11 @@ module Sinatra
         @prototype      = nil
         @extensions     = []
 
-        if superclass.respond_to?(:templates)
-          @templates = Hash.new { |hash, key| superclass.templates[key] }
+        @templates = if superclass.respond_to?(:templates)
+          Hash.new { |hash, key| superclass.templates[key] }
         else
-          @templates = {}
-        end
+          {}
+                     end
       end
 
       # Extension modules registered on this class and all superclasses.
@@ -1344,11 +1344,11 @@ module Sinatra
         end
 
         if data
-          if app and app =~ /([^\n]*\n)?#[^\n]*coding: *(\S+)/m
-            encoding = $2
+          encoding = if app and app =~ /([^\n]*\n)?#[^\n]*coding: *(\S+)/m
+            $2
           else
-            encoding = settings.default_encoding
-          end
+            settings.default_encoding
+                     end
           lines = app.count("\n") + 1
           template = nil
           force_encoding data, encoding

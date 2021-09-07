@@ -202,11 +202,11 @@ module Sinatra
 
       def merge!(other)
         other.each_pair do |key, value|
-          if block_given? and include? key
-            self[key] = yield(key.to_s, self[key], value)
+          self[key] = if block_given? and include? key
+            yield(key.to_s, self[key], value)
           else
-            self[key] = value
-          end
+            value
+                      end
         end
       end
 
